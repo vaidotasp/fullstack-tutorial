@@ -1,4 +1,4 @@
-import { gql } from "apollo-server";
+import { gql } from "apollo-server"
 
 export const typeDefs = gql`
   type Rocket {
@@ -33,9 +33,20 @@ export const typeDefs = gql`
   }
 
   type Query {
-    launches: [Launch]!
+    launches(pageSize: Int, after: String): LaunchConnection!
     launch(id: ID!): Launch
     me: User
+  }
+
+  """
+  Simple wrapper around our list of launches that contains a cursor to the
+  last item in the list. Pass this cursor to the launches query to fetch results
+  after these.
+  """
+  type LaunchConnection { # add this below the Query type as an additional type.
+    cursor: String!
+    hasMore: Boolean!
+    launches: [Launch]!
   }
 
   type TripUpdateResponse {
@@ -49,5 +60,4 @@ export const typeDefs = gql`
     cancelTrip(launchId: ID!): TripUpdateResponse!
     login(email: String): User
   }
-`;
-
+`
